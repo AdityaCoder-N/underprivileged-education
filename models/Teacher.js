@@ -7,7 +7,8 @@ const TeacherSchema = new Schema({
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     password:{
         type:String,
@@ -16,6 +17,32 @@ const TeacherSchema = new Schema({
     role:{
         type:String,
         required:true
+    },
+    donations:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Donation',
+        required:false
+    }],
+    address:{
+        type:String,
+        required:false
+    },
+    phoneNumber:{
+        type:String,
+        required:false
+    },
+    photo:{
+        type:String,
+        required:false
+    },
+    skills:[String],
+    location:{
+        latitude:{
+            type:Number
+        },
+        longitude:{
+            type:Number
+        }
     }
 },{timestamps:true})
 

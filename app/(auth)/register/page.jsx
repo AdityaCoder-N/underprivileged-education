@@ -1,6 +1,6 @@
 "use client"
 
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import Image from 'next/image'
 import { useRouter } from "next/navigation";
 import Link from 'next/link'
@@ -9,9 +9,11 @@ import bg from '@/assets/register-bg.jpg'
 
 import * as z from 'zod'
 import axios from 'axios'
+import { useSession } from 'next-auth/react';
 
 
 const page = () => {
+  const session = useSession();
   const router = useRouter();
   const [credentials,setCredentials] = useState({name:'',email:'',password:'',confirmPassword:'',role:'Student'});
 
@@ -85,7 +87,13 @@ const page = () => {
 
     setLoading(false);
   }
+  
 
+  useEffect(()=>{
+    if(session.status==="authenticated"){
+      router.replace('/');
+    }
+  },[session])
 
   return (
     <div className='min-h-screen w-full relative'>

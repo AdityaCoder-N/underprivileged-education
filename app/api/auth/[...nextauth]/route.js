@@ -14,7 +14,7 @@ const authOptions={
 
             async authorize(credentials){
                 const {email,password,role} = credentials;
-                console.log("credentials in authorize:",credentials)
+               
                 try {
                     await connectToDatabase();
 
@@ -29,6 +29,7 @@ const authOptions={
                     }
                     else if(role==='Teacher'){
                         const user = await Teacher.findOne({email:email});
+                        console.log("user in auth : ",user)
                         if(user){
                             const check = bcrypt.compareSync(password,user.password);
                             if(check){
@@ -47,13 +48,41 @@ const authOptions={
 
         })
     ],
+    callbacks:{
+        async jwt({token,user,session}){
+            
+            // passing user id and role to token
+            if(user){
+                return{
+                    ...token,
+                    id:user._id,
+                    role:user.role
+                }
+            }
+            return token;
+        },
+        async session({session,token,user}){
+            
+            // passing user id and role from token to session           
+            return {
+                ...session,
+                user:{
+                    ...session.user,
+                    id:token.id,
+                    role:token.role 
+                }
+            }
+            
+        }
+    },
     session:{
-        strategy:"jwt"
+        strategy:"jwt",
     },
     secret:process.env.NEXTAUTH_SECRET,
     pages:{
         signIn:'/login'
-    }
+    },
+    
 }
 
 export const handler = NextAuth(authOptions);

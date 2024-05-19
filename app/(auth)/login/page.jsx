@@ -81,7 +81,12 @@ const page = () => {
 
     setLoading(false);
   }
-
+  
+  useEffect(()=>{
+    if(session.status==="authenticated"){
+      router.replace('/');
+    }
+  },[])
 
   return (
     <div className='min-h-screen w-full relative'>
